@@ -57,6 +57,9 @@ prisma/migrations
 # local folder
 local
 
+# Editor-specific (không đưa lên repo)
+.cursor/
+
 # vercel
 .vercel
 
