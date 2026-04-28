@@ -59,6 +59,7 @@ local
 
 # Editor-specific (không đưa lên repo)
 .cursor/
+.claude/
 
 # vercel
 .vercel
