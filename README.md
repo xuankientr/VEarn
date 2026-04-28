@@ -1,245 +1,190 @@
-<div align="center">
+# VEarn - Nền tảng kiếm tiền theo nhiệm vụ
 
-  ![Superteam Earn Icon](/public/assets/square-logo-color.svg)
+VEarn là nền tảng Web2 kết nối doanh nghiệp với cộng tác viên thông qua các task thực tế. Người dùng kiếm tiền bằng cách hoàn thành các công việc cho doanh nghiệp.
 
-  <h2>Superteam Earn</h2>
-  <p>
-    <strong>An open source platform connecting crypto founders with elite talent to create bounties, and accelerate project completion</strong>
-  </p>
-  
-  ![Project Status: Active](https://www.repostatus.org/badges/latest/active.svg)
-  ![GitHub issues](https://img.shields.io/github/issues-raw/SuperteamDAO/earn)
-  ![GitHub pull requests](https://img.shields.io/github/issues-pr/SuperteamDAO/earn)
-  [![Follow](https://img.shields.io/twitter/follow/superteamearn.svg?style=social)](https://twitter.com/superteamearn)
-</div>
+## Tính năng chính
 
-## 🔗Official Links
+### Cho Cộng tác viên
+- Xem danh sách tasks đang mở
+- Nhận task và nộp bài
+- Theo dõi lịch sử và thu nhập
 
-- <img src="https://earn.superteam.fun/favicon.ico" title="Superteam Earn Icon" alt="superteam-earn-icon" width="24" height="24" /> Superteam Earn website - [https://earn.superteam.fun](https://earn.superteam.fun)
-- <img src="https://superteam.fun/favicon.png" title="Superteam Icon" alt="superteam-icon" width="24" height="24" /> Superteam website - [https://superteam.fun](https://superteam.fun)
-- <img src="https://x.com/favicon.ico" title="Superteam Earn X Icon" alt="superteam-earn-x-icon" width="24" height="24" /> Superteam Earn X/Twitter - [https://x.com/superteamearn](https://x.com/superteamearn)
+### Cho Doanh nghiệp
+- Tạo và quản lý tasks
+- Duyệt submissions từ cộng tác viên
+- Theo dõi thanh toán
 
-## 🛠️Development Setup
+### Cho Admin
+- Quản lý users và tasks
+- Xem thống kê hệ thống
 
-### Prerequisites
+## Công nghệ sử dụng
 
-- <img src="https://avatars.githubusercontent.com/u/9950313" title="NodeJS" alt="nodejs" width="28" height="28" /> [NodeJS](https://nodejs.org/en)
-- <img src="https://avatars.githubusercontent.com/u/2452804" title="MySQL" alt="mysql" width="28" height="28" /> [MySQL](https://www.mysql.com)
-- <img src="https://avatars.githubusercontent.com/u/21320719" title="pnpm" alt="pnpm" width="28" height="28" /> [pnpm](https://pnpm.io)
-- <img src="https://avatars.githubusercontent.com/u/81824329" title="Privy" alt="privy" width="28" height="28" /> [Privy](https://www.privy.io)
-- <img src="https://avatars.githubusercontent.com/u/1460763" title="Cloudinary" alt="cloudinary" width="28" height="28" /> [Cloudinary](https://cloudinary.com)
-- <img src="https://avatars.githubusercontent.com/u/109384852" title="Resend" alt="resend" width="28" height="28" /> [Resend](https://resend.com)
+- **Frontend**: Next.js 14, React 18, TailwindCSS
+- **Backend**: Next.js API Routes
+- **Database**: PostgreSQL + Prisma ORM
+- **Authentication**: NextAuth.js (Credentials)
+- **UI Components**: Radix UI, Lucide Icons
 
-### Getting Started
+## Cài đặt
 
-1. Clone the repository into a public Github repository (or fork it):
-    ```bash
-    git clone https://github.com/SuperteamDAO/earn.git
-    ```
+### Yêu cầu
+- Node.js 18+
+- PostgreSQL
+- pnpm (khuyến nghị) hoặc npm
 
-2. Navigate to the project directory:
-    ```bash
-    cd earn
-    ```
+### Bước 1: Clone và cài đặt dependencies
 
-3. Install the dependencies: 
-    ```bash
-    pnpm i
-    ```
+```bash
+git clone <repo-url>
+cd VEarn
+pnpm install
+```
 
-4. Install the MariaDB adapter (required for local MySQL development):
-    ```bash
-    pnpm add @prisma/adapter-mariadb
-    ```
-    Then, uncomment the MariaDB adapter code in `src/prisma.ts`:
-    - Line 1: Uncomment the `PrismaMariaDb` import
-    - Lines 35-44: Uncomment the URL parsing and adapter creation code
-    - Line 47: Uncomment the `adapter` parameter in `PrismaClient`
+### Bước 2: Cấu hình môi trường
 
-5. Set up your `.env` file.
-  - Start by copying the `.env.example` file to a new file named `.env`. This file will store your local environment settings.
-    
-  - Database setup:
+Tạo file `.env` từ `.env.example`:
 
-    **Option 1: Local MySQL (Recommended for Development)**
+```bash
+cp .env.example .env
+```
 
-    The app automatically detects your database type based on `DATABASE_URL`. Choose your platform:
+Cập nhật các biến môi trường trong `.env`:
 
-    <details>
-    <summary><b>🍎 macOS</b></summary>
+```env
+# Database - thay đổi theo PostgreSQL của bạn
+DATABASE_URL="postgresql://postgres:password@localhost:5432/vearn?schema=public"
 
-    1. Install MySQL using Homebrew:
-       ```bash
-       brew install mysql
-       ```
+# NextAuth
+NEXTAUTH_URL="http://localhost:3000"
+NEXTAUTH_SECRET="your-secret-key-here"
 
-    2. Start MySQL service:
-       ```bash
-       brew services start mysql
-       ```
+# JWT
+JWT_SECRET="your-jwt-secret-here"
 
-    3. Create database:
-       ```bash
-       mysql -u root -e "CREATE DATABASE earn_db"
-       ```
+# Đồ án / demo: rút ví mô phỏng (không cần cổng thật)
+PAYMENT_SANDBOX="true"
+```
 
-    4. Set `DATABASE_URL` in `.env`:
-       ```
-       DATABASE_URL='mysql://root@localhost:3306/earn_db'
-       ```
-    </details>
+### Bước 3: Setup Database
 
-    <details>
-    <summary><b>🪟 Windows</b></summary>
+```bash
+# Generate Prisma client
+pnpm prisma generate
 
-    1. **Option A: Using MySQL Installer (Recommended for beginners)**
-       - Download [MySQL Community Server Installer](https://dev.mysql.com/downloads/installer/)
-       - Run the installer and choose "Developer Default"
-       - Set root password when prompted (remember this!)
-       - Complete installation
+# Áp schema (dev nhanh)
+pnpm prisma db push
 
-    2. **Option B: Using Package Manager**
-       ```powershell
-       # Using Chocolatey
-       choco install mysql
+# Hoặc migration (khuyến nghị staging/production)
+# pnpm db:migrate
 
-       # OR using winget
-       winget install Oracle.MySQL
-       ```
+# Seed data mẫu
+pnpm db:seed
+```
 
-    3. Start MySQL (if not already running):
-       - Open "Services" app (Win + R, type `services.msc`)
-       - Find "MySQL" service and start it
+### Bước 4: Chạy ứng dụng
 
-       OR via command line:
-       ```powershell
-       net start MySQL
-       ```
+```bash
+# Development
+pnpm dev
 
-    4. Create database:
-       ```powershell
-       mysql -u root -p -e "CREATE DATABASE earn_db"
-       ```
-       Enter your root password when prompted.
+# Production
+pnpm build
+pnpm start
+```
 
-    5. Set `DATABASE_URL` in `.env`:
-       ```
-       DATABASE_URL='mysql://root:YOUR_PASSWORD@localhost:3306/earn_db'
-       ```
-       Replace `YOUR_PASSWORD` with your MySQL root password.
-    </details>
+Ứng dụng chạy tại: http://localhost:3000
 
-    <details>
-    <summary><b>🐧 Linux</b></summary>
+## Đồ án / MVP — ví & thanh toán mô phỏng
 
-    **Ubuntu/Debian:**
-    ```bash
-    # Install MySQL
-    sudo apt update
-    sudo apt install mysql-server
+Nếu bạn chỉ cần **demo hoặc đồ án**, không bắt buộc tích hợp cổng thanh toán / rút tiền thật.
 
-    # Start MySQL service
-    sudo systemctl start mysql
-    sudo systemctl enable mysql
+1. Trong `.env`, bật sandbox (đã có sẵn trong `.env.example`):
+   - `PAYMENT_SANDBOX=true` — bật nút **rút tiền mô phỏng** trên trang ví (trừ số dư trong database, không có giao dịch ngân hàng).
+2. **Luồng nghiệp vụ minh họa**: Business/Admin thanh toán submission → tiền được **ghi có vào ví nền tảng** (`walletBalance`) của contributor → contributor vào **Dashboard → Ví thu nhập** xem số dư và (khi sandbox bật) thử rút mô phỏng.
+3. **Nạp ví Business** (trả contributor bằng ví): tuỳ chọn cấu hình Stripe test / VNPay sandbox / MoMo test trong `.env`; có thể bỏ trống nếu demo chỉ dùng **Thanh toán thủ công (MANUAL)** sau khi “chuyển khoản ngoài hệ thống”.
+4. Trong **báo cáo / slide**, nên nêu rõ **phạm vi MVP**: ví nội bộ, rút sandbox; **hướng phát triển**: cổng nạp/rút thật, đối soát, KYC (nếu có).
 
-    # Secure installation (optional but recommended)
-    sudo mysql_secure_installation
+## Giai đoạn testing & deploy
 
-    # Create database
-    sudo mysql -e "CREATE DATABASE earn_db"
+- **Roadmap đầy đủ:** [`docs/BACKLOG.md`](docs/BACKLOG.md)
+- **Testing MVP (checklist QA):** [`docs/TESTING-PHASE.md`](docs/TESTING-PHASE.md)
+- **Deploy:** [`docs/DEPLOY.md`](docs/DEPLOY.md)
+- **Go-live thương mại (email Resend, migrate, bảo mật):** [`docs/COMMERCIAL-LAUNCH.md`](docs/COMMERCIAL-LAUNCH.md)
+- **CI:** `pnpm run ci:check` — GitHub: types + lint + build ([`.github/workflows/ci.yml`](.github/workflows/ci.yml))
 
-    # Create user (optional, for better security)
-    sudo mysql -e "CREATE USER 'earnuser'@'localhost' IDENTIFIED BY 'your_password';"
-    sudo mysql -e "GRANT ALL PRIVILEGES ON earn_db.* TO 'earnuser'@'localhost';"
-    sudo mysql -e "FLUSH PRIVILEGES;"
-    ```
+## Tài khoản Demo
 
-    **Fedora/RHEL/CentOS:**
-    ```bash
-    # Install MySQL
-    sudo dnf install mysql-server  # or 'yum' for older versions
+Sau khi chạy seed, bạn có thể đăng nhập với:
 
-    # Start MySQL service
-    sudo systemctl start mysqld
-    sudo systemctl enable mysqld
+| Role | Email | Password |
+|------|-------|----------|
+| Admin | admin@vearn.vn | admin123 |
+| Business | techcorp@vearn.vn | business123 |
+| Contributor | nguyen.van.a@gmail.com | user123 |
 
-    # Create database
-    sudo mysql -e "CREATE DATABASE earn_db"
-    ```
+## Cấu trúc thư mục
 
-    **Set `DATABASE_URL` in `.env`:**
-    ```
-    # If using root:
-    DATABASE_URL='mysql://root@localhost:3306/earn_db'
+```
+VEarn/
+├── prisma/
+│   ├── schema.prisma    # Database schema
+│   └── seed.ts          # Seed data
+├── src/
+│   ├── components/      # React components
+│   │   ├── layout/      # Layout components
+│   │   └── ui/          # UI components
+│   ├── lib/             # Utilities
+│   │   ├── api.ts       # API client
+│   │   └── auth.ts      # Auth config
+│   ├── pages/           # Next.js pages
+│   │   ├── api/         # API routes
+│   │   ├── auth/        # Auth pages
+│   │   ├── dashboard/   # Dashboard pages
+│   │   └── tasks/       # Task pages
+│   ├── styles/          # CSS styles
+│   └── types/           # TypeScript types
+├── public/              # Static assets
+└── package.json
+```
 
-    # If you created a user:
-    DATABASE_URL='mysql://earnuser:your_password@localhost:3306/earn_db'
-    ```
-    </details>
+## API Endpoints
 
-    **After setting up MySQL, generate Prisma client:**
-    ```bash
-    npx prisma generate && npx prisma db push
-    ```
+### Authentication
+- `POST /api/auth/register` - Đăng ký
+- `POST /api/auth/[...nextauth]` - NextAuth endpoints
 
-    **Option 2: Cloud MySQL Database**
+### Tasks
+- `GET /api/tasks` - Danh sách tasks
+- `POST /api/tasks` - Tạo task (Business)
+- `GET /api/tasks/[id]` - Chi tiết task
+- `PUT /api/tasks/[id]` - Cập nhật task
+- `POST /api/tasks/[id]/claim` - Nhận task
+- `POST /api/tasks/[id]/submit` - Nộp bài
 
-    If you prefer not to run MySQL locally, you can use cloud services (all have free tiers):
-    - <img src="https://avatars.githubusercontent.com/u/66716858" title="Railway" alt="railway" width="28" height="28" /> [Setup MySQL with Railway](https://docs.railway.app/guides/mysql)
-    - <img src="https://avatars.githubusercontent.com/u/36424661" title="Render" alt="render" width="28" height="28" /> [Setup MySQL with Render](https://docs.render.com/deploy-mysql)
-    - [Setup MySQL with PlanetScale](https://planetscale.com/)
+### Submissions
+- `GET /api/submissions` - Danh sách submissions
+- `POST /api/submissions/[id]/review` - Duyệt submission
 
-    Then set `DATABASE_URL` in `.env` with the connection string from your cloud provider.
-    
-  - <img src="https://avatars.githubusercontent.com/u/81824329" title="Privy" alt="privy" width="28" height="28" /> [Privy](https://www.privy.io/) setup:
-    - Create a new privy app, Client Side Web App
-    - Add env variables `NEXT_PUBLIC_PRIVY_APP_ID` and `PRIVY_APP_SECRET`
-    - Update the setting to include server side environment
-    - Add env variable `PRIVY_VERIFICATION_KEY` (hidden under 'Verify with key instead' in Privy App settings)
-    - Enable Solana External Wallets and Google social sign in
-    - 
-  - <img src="https://avatars.githubusercontent.com/u/109384852" title="Resend" alt="resend" width="28" height="28" /> [Resend](https://resend.com) setup:
-    - To obtain your `RESEND_API_KEY`, visit the Resend dashboard.
-    
-  - <img src="https://avatars.githubusercontent.com/u/1460763" title="Cloudinary" alt="cloudinary" width="28" height="28" /> [Cloudinary](https://cloudinary.com/) setup:
-    - To obtain your `CLOUDINARY_*` API keys, visit the Cloudinary dashboard. 
-    
-  - <img src="https://avatars.githubusercontent.com/u/109384852" title="Jupiter" alt="jupiter" width="28" height="28" /> [Jupiter](https://jup.ag/) API setup:
-    - Visit [portal.jup.ag](https://portal.jup.ag) to generate a free API key
-    - Add `JUPITER_API_KEY` to your `.env` file
-    - Required for token price fetching functionality
-    
-  - Set up Solana RPC WebSocket URL:
-    - Set `NEXT_PUBLIC_RPC_WS_URL` in your `.env` file. This is required for wallet-related features.
-    - You can use a public RPC endpoint or get one from providers like [Helius](https://helius.dev/), [Triton.one](https://triton.one/).
-      ```
-      NEXT_PUBLIC_RPC_WS_URL='wss://api.mainnet-beta.solana.com?api-key=abc-xyz'
-      ```
-    > **Note:** Public endpoints have rate limits. For development, consider using devnet: `wss://api.devnet.solana.com`
+### Payments
+- `GET /api/payments` - Lịch sử thanh toán
+- `POST /api/payments/[id]/pay` - Đánh dấu đã thanh toán
 
-  ❗NOTE: If you are facing any issues with setup, feel free to contact [Abhishek](https://twitter.com/abhwshek) or [Jayesh](https://twitter.com/jayeshvp24)
+### Admin
+- `GET /api/admin/stats` - Thống kê
+- `GET /api/admin/users` - Quản lý users
 
-6. Run the development server
-    ```bash
-    pnpm dev
-    ```
+## Scripts
 
-## ⭐Contributing
-We welcome contributions from everyone! Whether it's submitting an issue, a pull request, or suggesting new ideas, your input is highly valued. Check out our [contributing guide](CONTRIBUTING.md) for guidelines on how to proceed.
+```bash
+pnpm dev          # Chạy development server
+pnpm build        # Build production
+pnpm start        # Chạy production server
+pnpm db:push      # Push Prisma schema
+pnpm db:seed      # Seed database
+pnpm db:studio    # Mở Prisma Studio
+```
 
-Facing an issue? Please feel free to reach out to [Abhishek](https://twitter.com/abhwshek), [Jayesh](https://twitter.com/jayeshvp24) or [Pratik](https://twitter.com/jayeshvp24)
+## License
 
-### Why should you contribute to Earn?
-- Consistent, good-quality contributions will earn you [contributor](https://docs.superteam.fun/the-superteam-handbook/getting-started/community-structure) status in the Superteam of your preference! Contributors get special access to channels on Discord, preferential entry to events, and is a great stepping stone to becoming a Superteam member.
-- Get [XP](https://docs.superteam.fun/the-superteam-handbook/community/the-reputation-system) if you're already a Superteam Member or Contributor
-- Unwavering love and support from the Superteam Earn team!
-
-### Contributors
-<a href="https://github.com/SuperteamDAO/earn/graphs/contributors">
-  <img src="https://contrib.rocks/image?repo=SuperteamDAO/earn" />
-</a>
-
-## 📊Repo Activity
-
-<img width="100%" src="https://repobeats.axiom.co/api/embed/a82375612cac34000c44afc158c634bc0802a712.svg" />
-
+MIT

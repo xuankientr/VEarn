@@ -1,0 +1,57 @@
+Card,Description,Labels,Priority,Status
+Email Verification,Xác thực email khi đăng ký tài khoản,Feature; Auth,🔴 High,Backlog
+Email Notifications,"Gửi email khi có application mới, submission được duyệt, payment",Feature; Notification,🔴 High,Backlog
+In-app Notifications,Hệ thống thông báo realtime trong app,Feature; UX,🔴 High,Backlog
+Payment Gateway,Tích hợp cổng thanh toán (VNPay/Momo/Bank transfer),Feature; Payment,🔴 High,Backlog
+Withdrawal System,Contributor rút tiền về tài khoản ngân hàng,Feature; Payment,🔴 High,Backlog
+Task Deadline Reminder,Nhắc nhở trước khi deadline task,Feature; Notification,🔴 High,Backlog
+Rating & Review System,Đánh giá Contributor sau khi hoàn thành task,Feature; Trust,🟠 Medium,Backlog
+Contributor Portfolio,Trang portfolio showcase các task đã hoàn thành,Feature; Profile,🟠 Medium,Backlog
+Messaging System,Chat giữa Business và Contributor,Feature; Communication,🟠 Medium,Backlog
+Bookmark Tasks,Lưu task yêu thích để xem sau,Feature; UX,🟠 Medium,Backlog
+Task Templates,Business tạo template cho các task tương tự,Feature; Productivity,🟠 Medium,Backlog
+Advanced Analytics,Dashboard thống kê chi tiết cho Business,Feature; Analytics,🟠 Medium,Backlog
+Export Data,Xuất báo cáo CSV/Excel,Feature; Admin,🟠 Medium,Backlog
+Bulk Actions,"Admin thao tác hàng loạt (approve, delete...)",Feature; Admin,🟠 Medium,Backlog
+Search Improvements,Full-text search với Elasticsearch/Algolia,Enhancement; Search,🟠 Medium,Backlog
+Filter by Location,Lọc task theo vùng/miền,Feature; Filter,🟠 Medium,Backlog
+Dark Mode,Giao diện tối cho app,Enhancement; UI,🟡 Low,Backlog
+Multi-language (i18n),Hỗ trợ đa ngôn ngữ (EN/VI),Enhancement; i18n,🟡 Low,Backlog
+PWA Support,Progressive Web App - cài đặt trên mobile,Enhancement; Mobile,🟡 Low,Backlog
+Social Login,Đăng nhập bằng Google/Facebook,Feature; Auth,🟡 Low,Backlog
+Two-Factor Auth (2FA),Bảo mật 2 lớp,Feature; Security,🟡 Low,Backlog
+Referral System,Giới thiệu bạn bè nhận thưởng,Feature; Growth,🟡 Low,Backlog
+Gamification,"Badges, levels, achievements",Feature; Engagement,🟡 Low,Backlog
+Task Milestones,Chia task thành nhiều milestones,Feature; Task,🟡 Low,Backlog
+Dispute Resolution,Hệ thống giải quyết tranh chấp,Feature; Trust,🟡 Low,Backlog
+Report/Flag System,Báo cáo vi phạm,Feature; Moderation,🟡 Low,Backlog
+Unit Tests,Viết unit tests cho API và components,Tech; Testing,🔵 Tech Debt,Backlog
+E2E Tests,Playwright/Cypress end-to-end tests,Tech; Testing,🔵 Tech Debt,Backlog
+CI/CD Pipeline,GitHub Actions cho auto deploy,Tech; DevOps,🔵 Tech Debt,Backlog
+API Documentation,Swagger/OpenAPI docs,Tech; Docs,🔵 Tech Debt,Backlog
+Performance Optimization,"Lazy loading, caching, image optimization",Tech; Performance,🔵 Tech Debt,Backlog
+Security Audit,"Kiểm tra bảo mật, OWASP",Tech; Security,🔵 Tech Debt,Backlog
+Database Indexing,Tối ưu query database,Tech; Performance,🔵 Tech Debt,Backlog
+Error Monitoring,Sentry integration,Tech; Monitoring,🔵 Tech Debt,Backlog
+Logging System,Structured logging với Winston/Pino,Tech; Monitoring,🔵 Tech Debt,Backlog
+Rate Limiting,Chống spam API,Tech; Security,🔵 Tech Debt,Backlog
+User Authentication (Login/Register),Đăng nhập và đăng ký tài khoản,Auth,✅ Done,Done
+Forgot/Reset Password,Quên mật khẩu và đặt lại,Auth,✅ Done,Done
+User Profile Management,Quản lý thông tin cá nhân,Profile,✅ Done,Done
+Public User Profile,Trang profile công khai,Profile,✅ Done,Done
+Task CRUD,Tạo/Xem/Sửa/Xóa task,Task,✅ Done,Done
+Task Application System,Hệ thống ứng tuyển task,Task,✅ Done,Done
+Application Review,Duyệt/Từ chối đơn ứng tuyển,Task,✅ Done,Done
+Submission System,Hệ thống nộp bài,Submission,✅ Done,Done
+Submission Review,Duyệt submission với feedback,Submission,✅ Done,Done
+File Upload,Upload file đính kèm,Feature,✅ Done,Done
+Payment Tracking,Theo dõi thanh toán,Payment,✅ Done,Done
+Admin User Management,Quản lý users (Admin),Admin,✅ Done,Done
+Admin Statistics,Thống kê hệ thống,Admin,✅ Done,Done
+Dashboard (All Roles),Dashboard cho tất cả roles,UI,✅ Done,Done
+Landing Page,Trang chủ giới thiệu,UI,✅ Done,Done
+Mobile Responsive,Giao diện responsive mobile,UI,✅ Done,Done
+Error Pages (404/500),Trang lỗi 404 và 500,UI,✅ Done,Done
+Settings (Change Password),Cài đặt đổi mật khẩu,Settings,✅ Done,Done
+Advanced Task Filtering,Lọc task nâng cao,Search,✅ Done,Done
+Featured Tasks,Task nổi bật trên homepage,Feature,✅ Done,Done

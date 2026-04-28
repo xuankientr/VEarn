@@ -25,6 +25,9 @@ src/generated/
 public/sitemap.xml
 public/sitemap-*.xml
 
+# uploaded files
+public/uploads/
+
 # cache
 .swc/
 
@@ -35,6 +38,8 @@ public/sitemap-*.xml
 .DS_Store
 *.pem
 Thumbs.db
+*.bak
+*.tsbuildinfo
 
 # debug
 npm-debug.log*

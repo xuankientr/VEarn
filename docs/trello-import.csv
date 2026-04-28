@@ -1,0 +1,286 @@
+Card Name,List,Description,Labels
+Email Verification,HIGH PRIORITY,"Xác thực email khi đăng ký tài khoản mới
+
+**Acceptance Criteria:**
+- Gửi email chứa link xác thực sau khi đăng ký
+- Link có thời hạn 24h
+- User không thể đăng nhập nếu chưa verify
+- Có nút Gửi lại email xác thực
+
+**Estimate:** 3 points","Feature,Auth"
+Email Notifications,HIGH PRIORITY,"Gửi email thông báo cho các sự kiện quan trọng
+
+**Acceptance Criteria:**
+- Business nhận email khi có application mới
+- Contributor nhận email khi application được duyệt/từ chối
+- Contributor nhận email khi submission được review
+- User có thể tắt/bật từng loại notification
+
+**Estimate:** 5 points","Feature,Notification"
+In-app Notifications,HIGH PRIORITY,"Hệ thống thông báo realtime trong ứng dụng
+
+**Acceptance Criteria:**
+- Bell icon hiển thị số notification chưa đọc
+- Dropdown list notifications
+- Mark as read / Mark all as read
+- Click vào notification để navigate
+- Realtime update (WebSocket)
+
+**Estimate:** 5 points","Feature,UX"
+Payment Gateway Integration,HIGH PRIORITY,"Tích hợp cổng thanh toán (VNPay/Momo)
+
+**Acceptance Criteria:**
+- Hỗ trợ VNPay, Momo, Bank Transfer
+- Business nạp tiền vào ví
+- Lịch sử giao dịch nạp tiền
+- Webhook xử lý callback
+
+**Estimate:** 8 points","Feature,Payment"
+Withdrawal System,HIGH PRIORITY,"Contributor rút tiền về tài khoản ngân hàng
+
+**Acceptance Criteria:**
+- Contributor thêm thông tin ngân hàng
+- Tạo yêu cầu rút tiền (minimum amount)
+- Admin duyệt yêu cầu rút tiền
+- Lịch sử rút tiền
+
+**Estimate:** 5 points","Feature,Payment"
+Task Deadline Reminder,HIGH PRIORITY,"Nhắc nhở trước khi deadline task
+
+**Acceptance Criteria:**
+- Email nhắc nhở 3 ngày, 1 ngày trước deadline
+- In-app notification
+- Warning trên task card khi gần deadline
+
+**Estimate:** 3 points","Feature,Notification"
+Rating & Review System,MEDIUM PRIORITY,"Business đánh giá Contributor sau khi hoàn thành task
+
+**Acceptance Criteria:**
+- Rating 1-5 sao
+- Comment đánh giá
+- Hiển thị average rating trên profile
+- Contributor có thể reply review
+
+**Estimate:** 5 points","Feature,Trust"
+Contributor Portfolio,MEDIUM PRIORITY,"Trang portfolio showcase các task đã hoàn thành
+
+**Acceptance Criteria:**
+- Danh sách tasks đã hoàn thành
+- Thống kê: tổng task, thu nhập, rating
+- Skills showcase
+- Share link portfolio
+
+**Estimate:** 3 points","Feature,Profile"
+Messaging System,MEDIUM PRIORITY,"Chat realtime giữa Business và Contributor
+
+**Acceptance Criteria:**
+- Chat 1-1 trong context của task
+- Gửi text, links, hình ảnh
+- Notification khi có tin nhắn mới
+- Lịch sử chat
+
+**Estimate:** 8 points","Feature,Communication"
+Bookmark Tasks,MEDIUM PRIORITY,"Lưu task yêu thích để xem sau
+
+**Acceptance Criteria:**
+- Button bookmark trên task card và detail
+- Trang Saved Tasks trong dashboard
+- Remove bookmark
+
+**Estimate:** 2 points","Feature,UX"
+Task Templates,MEDIUM PRIORITY,"Business tạo template cho các task tương tự
+
+**Acceptance Criteria:**
+- Save task as template
+- List templates
+- Create task from template
+- Edit/delete template
+
+**Estimate:** 3 points","Feature,Productivity"
+Advanced Analytics Dashboard,MEDIUM PRIORITY,"Dashboard thống kê chi tiết cho Business
+
+**Acceptance Criteria:**
+- Chart: Tasks theo thời gian
+- Chart: Spending theo category
+- Chart: Top contributors
+- Filter by date range
+
+**Estimate:** 5 points","Feature,Analytics"
+Export Data (CSV/Excel),MEDIUM PRIORITY,"Xuất báo cáo dạng CSV/Excel
+
+**Acceptance Criteria:**
+- Export danh sách tasks
+- Export danh sách submissions
+- Export payment history
+
+**Estimate:** 3 points","Feature,Admin"
+Bulk Actions,MEDIUM PRIORITY,"Admin thao tác hàng loạt
+
+**Acceptance Criteria:**
+- Select multiple items
+- Bulk approve/reject
+- Bulk delete
+- Bulk activate/deactivate
+
+**Estimate:** 3 points","Feature,Admin"
+Search Improvements,MEDIUM PRIORITY,"Full-text search với relevance ranking
+
+**Acceptance Criteria:**
+- Search by title, description, skills
+- Relevance-based ranking
+- Search suggestions
+- Recent searches
+
+**Estimate:** 5 points","Enhancement,Search"
+Dark Mode,LOW PRIORITY,"Giao diện tối cho ứng dụng
+
+**Acceptance Criteria:**
+- Toggle dark/light mode
+- Persist preference
+- Auto detect system preference
+
+**Estimate:** 3 points","Enhancement,UI"
+Multi-language (i18n),LOW PRIORITY,"Hỗ trợ đa ngôn ngữ (EN/VI)
+
+**Acceptance Criteria:**
+- Vietnamese (default)
+- English
+- Language switcher
+- Persist preference
+
+**Estimate:** 5 points","Enhancement,i18n"
+PWA Support,LOW PRIORITY,"Progressive Web App - cài đặt trên mobile
+
+**Acceptance Criteria:**
+- Installable on mobile
+- Offline support (basic)
+- Push notifications
+- App icon, splash screen
+
+**Estimate:** 3 points","Enhancement,Mobile"
+Social Login,LOW PRIORITY,"Đăng nhập bằng Google/Facebook
+
+**Acceptance Criteria:**
+- Login with Google
+- Login with Facebook
+- Link existing account
+
+**Estimate:** 3 points","Feature,Auth"
+Two-Factor Auth (2FA),LOW PRIORITY,"Bảo mật 2 lớp
+
+**Acceptance Criteria:**
+- Enable/disable 2FA in settings
+- TOTP (Google Authenticator)
+- Backup codes
+
+**Estimate:** 5 points","Feature,Security"
+Referral System,LOW PRIORITY,"Giới thiệu bạn bè nhận thưởng
+
+**Acceptance Criteria:**
+- Unique referral code/link
+- Track referrals
+- Reward khi referred user hoàn thành task
+- Referral dashboard
+
+**Estimate:** 5 points","Feature,Growth"
+Gamification,LOW PRIORITY,"Badges, levels, achievements
+
+**Acceptance Criteria:**
+- Badges for milestones
+- Level system based on XP
+- Leaderboard
+- Display on profile
+
+**Estimate:** 5 points","Feature,Engagement"
+Task Milestones,LOW PRIORITY,"Chia task lớn thành nhiều milestones
+
+**Acceptance Criteria:**
+- Create task with multiple milestones
+- Each milestone has deadline, reward %
+- Submit per milestone
+- Partial payment per milestone
+
+**Estimate:** 8 points","Feature,Task"
+Dispute Resolution,LOW PRIORITY,"Hệ thống giải quyết tranh chấp
+
+**Acceptance Criteria:**
+- Open dispute on submission
+- Both parties provide evidence
+- Admin review and decide
+
+**Estimate:** 5 points","Feature,Trust"
+Report/Flag System,LOW PRIORITY,"Báo cáo vi phạm
+
+**Acceptance Criteria:**
+- Report user, task, submission
+- Select reason
+- Admin review reports
+- Take action (warn, ban)
+
+**Estimate:** 3 points","Feature,Moderation"
+Unit Tests,TECH DEBT,"Viết unit tests cho API và components
+
+**Acceptance Criteria:**
+- Jest setup
+- Test coverage > 70%
+- Tests for all API endpoints
+
+**Estimate:** 8 points","Tech,Testing"
+E2E Tests,TECH DEBT,"End-to-end tests với Playwright
+
+**Acceptance Criteria:**
+- Playwright setup
+- Tests for critical user flows
+- CI integration
+
+**Estimate:** 5 points","Tech,Testing"
+CI/CD Pipeline,TECH DEBT,"GitHub Actions cho auto deploy
+
+**Acceptance Criteria:**
+- Run tests on PR
+- Auto deploy to staging
+- Auto deploy to production
+
+**Estimate:** 3 points","Tech,DevOps"
+API Documentation,TECH DEBT,"Swagger/OpenAPI documentation
+
+**Acceptance Criteria:**
+- Document all endpoints
+- Request/response examples
+- Hosted docs page
+
+**Estimate:** 3 points","Tech,Docs"
+Performance Optimization,TECH DEBT,"Tối ưu tốc độ load
+
+**Acceptance Criteria:**
+- Image optimization
+- Code splitting
+- API caching
+- Lighthouse score > 90
+
+**Estimate:** 5 points","Tech,Performance"
+Security Audit,TECH DEBT,"Kiểm tra lỗ hổng bảo mật
+
+**Acceptance Criteria:**
+- OWASP Top 10 check
+- SQL injection prevention
+- XSS prevention
+- Security headers
+
+**Estimate:** 5 points","Tech,Security"
+Error Monitoring (Sentry),TECH DEBT,"Tích hợp Sentry để track errors
+
+**Acceptance Criteria:**
+- Sentry setup
+- Error tracking frontend + backend
+- Slack alerts
+
+**Estimate:** 2 points","Tech,Monitoring"
+Rate Limiting,TECH DEBT,"Chống spam API
+
+**Acceptance Criteria:**
+- Rate limit per IP/user
+- Different limits per endpoint
+- Return 429 response
+
+**Estimate:** 2 points","Tech,Security"

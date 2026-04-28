@@ -1,890 +1,420 @@
+// VEarn Platform - Prisma Schema
+// A simplified Web2 task-based earning platform
+
 generator client {
-  provider               = "prisma-client"
-  output                 = "../src/generated/prisma"
-  engineType             = "client"
-  moduleFormat           = "esm"
-  generatedFileExtension = "ts"
-  importFileExtension    = "ts"
+  provider = "prisma-client-js"
 }
 
 datasource db {
-  provider     = "mysql"
-  relationMode = "prisma"
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
 }
 
-model Bounties {
-  id                 String             @id @default(uuid())
-  title              String
-  slug               String             @unique
-  description        String?            @db.LongText
-  deadline           DateTime?
-  commitmentDate     DateTime?
-  eligibility        Json?
-  status             status             @default(OPEN)
-  token              String?
-  rewardAmount       Float?
-  rewards            Json?
-  maxBonusSpots      Int                @default(0)
-  usdValue           Float?
-  tokenUsdAtPublish  Float?
-  sponsorId          String
-  pocId              String
-  source             Source             @default(NATIVE)
-  isPublished        Boolean            @default(false)
-  isFeatured         Boolean            @default(false)
-  isActive           Boolean            @default(true)
-  isArchived         Boolean            @default(false)
-  createdAt          DateTime           @default(now())
-  updatedAt          DateTime           @updatedAt
-  applicationLink    String?
-  skills             Json?
-  type               BountyType         @default(bounty)
-  requirements       String?            @db.Text
-  isWinnersAnnounced Boolean            @default(false)
-  templateId         String?
-  region             String             @default("Global")
-  pocSocials         String?
-  hackathonprize     Boolean            @default(false)
-  applicationType    ApplicationType    @default(fixed)
-  timeToComplete     String?
-  references         Json?
-  referredBy         String?
-  publishedAt        DateTime?
-  isPrivate          Boolean            @default(false)
-  hackathonId        String?
-  compensationType   CompensationType   @default(fixed)
-  maxRewardAsk       Float?
-  minRewardAsk       Float?
-  template           BountiesTemplates? @relation(fields: [templateId], references: [id])
-  sponsor            Sponsors           @relation(fields: [sponsorId], references: [id])
-  poc                User               @relation("poc", fields: [pocId], references: [id])
-  language           String?
-  shouldSendEmail    Boolean            @default(true)
-  isFndnPaying       Boolean            @default(false)
-  Submission         Submission[]
-  SubscribeBounty    SubscribeBounty[]
-  Hackathon          Hackathon?         @relation(fields: [hackathonId], references: [id])
-  winnersAnnouncedAt DateTime?
-  Scouts             Scouts[]
-  Comments           Comment[]
-  discordMessageIds  Json?
-  telegramMessageIds Json?
-  ai                 Json?
-  publishedBy        String?
-  XWeeklyThread      String?
-  XStandalonePost    String?
-  isPro              Boolean            @default(false)
-
-  @@index([id, slug])
-  @@index([pocId])
-  @@index([templateId])
-  @@index([hackathonId])
-  @@index([isPublished, isPrivate])
-  @@index([deadline, updatedAt])
-  @@index([title])
-  @@index([deadline(sort: Asc)], map: "Bounties_deadline_asc_idx")
-  @@index([deadline(sort: Desc)], map: "Bounties_deadline_desc_idx")
-  @@index([winnersAnnouncedAt(sort: Desc)])
-  @@index([isFeatured(sort: Desc)])
-  @@index([isPublished, isActive, isArchived, status])
-  @@index([isPublished, isActive, isArchived, isPrivate, status])
-  @@index([sponsorId, isArchived, isPublished, isActive])
-  @@index([isPublished, isActive, isPrivate, hackathonprize])
-  @@index([compensationType, usdValue])
-  @@index([compensationType, maxRewardAsk])
-  @@index([isWinnersAnnounced, isPublished, status])
-  @@index([region, isPublished, status])
-  @@index([isPublished, isActive, isArchived, isPrivate, type])
-  @@index([deadline, isWinnersAnnounced])
-  @@index([usdValue, maxRewardAsk])
-  @@index([region, isPublished, isActive])
-  @@index([sponsorId, isPublished, isActive])
-  @@index([isFeatured, deadline])
-  @@index([createdAt, isPublished])
-  @@index([winnersAnnouncedAt, isWinnersAnnounced])
-  @@index([language, compensationType])
-  @@index([type, isPublished, isActive, isArchived])
-  @@index([isPublished, isActive, isArchived, isPrivate, hackathonprize, type])
-  @@index([region, type, isPublished, isActive])
-  @@index([deadline, isWinnersAnnounced, type])
-}
-
-model BountiesTemplates {
-  id               String           @id @default(uuid())
-  title            String?
-  deadline         DateTime?
-  slug             String?
-  description      String?          @db.Text
-  color            String?
-  emoji            String?
-  isFeatured       Boolean          @default(false)
-  isActive         Boolean          @default(true)
-  isArchived       Boolean          @default(false)
-  createdAt        DateTime         @default(now())
-  updatedAt        DateTime         @updatedAt
-  skills           Json?
-  type             BountyType       @default(bounty)
-  requirements     String?          @db.Text
-  region           String           @default("Global")
-  applicationType  ApplicationType  @default(fixed)
-  status           status           @default(OPEN)
-  timeToComplete   String?
-  token            String?
-  references       Json?
-  referredBy       String?
-  publishedAt      DateTime?
-  compensationType CompensationType @default(fixed)
-  maxRewardAsk     Float?
-  minRewardAsk     Float?
-  language         String?
-  rewardAmount     Float?
-  rewards          Json?
-  maxBonusSpots    Int              @default(0)
-  usdValue         Float?
-  sponsorId        String
-  pocId            String
-  pocSocials       String?
-  source           Source           @default(NATIVE)
-  isPublished      Boolean          @default(false)
-  Bounties         Bounties[]
-  sponsor          Sponsors         @relation(fields: [sponsorId], references: [id])
-  poc              User             @relation("poc", fields: [pocId], references: [id])
-
-  @@index([isActive, isArchived, type])
-  @@index([pocId])
-  @@index([sponsorId])
-  @@index([type])
-}
-
-model Comment {
-  id               String            @id @default(uuid())
-  message          String            @db.VarChar(5000)
-  authorId         String
-  refType          CommentRefType    @default(BOUNTY)
-  refId            String
-  isActive         Boolean           @default(true)
-  isArchived       Boolean           @default(false)
-  isPinned         Boolean           @default(false)
-  createdAt        DateTime          @default(now())
-  updatedAt        DateTime          @updatedAt
-  replyToId        String?
-  submissionId     String?
-  type             CommentType       @default(NORMAL)
-  author           User              @relation(fields: [authorId], references: [id])
-  repliedTo        Comment?          @relation("CommentReplies", fields: [replyToId], references: [id], onDelete: NoAction, onUpdate: NoAction)
-  replies          Comment[]         @relation("CommentReplies")
-  listing          Bounties?         @relation(fields: [refId], references: [id], map: "Comment_Listing_fkey")
-  submission       Submission?       @relation(fields: [refId], references: [id], map: "Comment_Submission_fkey")
-  pow              PoW?              @relation(fields: [refId], references: [id], map: "Comment_PoW_fkey")
-  GrantApplication GrantApplication? @relation(fields: [refId], references: [id], map: "Comment_GrantApplication_fkey")
-
-  @@index([id, refId])
-  @@index([authorId])
-  @@index([replyToId])
-  @@index([refId, isActive, isArchived, type])
-  @@index([refId, isActive, isArchived, replyToId])
-  @@index([refType, type])
-  @@index([updatedAt(sort: Desc)])
-  @@index([refId, isPinned])
-}
-
-model Grants {
-  id                     String             @id @default(uuid())
-  title                  String
-  slug                   String             @unique
-  description            String?            @db.Text
-  shortDescription       String?            @db.VarChar(1000)
-  token                  String?
-  minReward              Float?
-  maxReward              Float?
-  totalPaid              Float              @default(0)
-  totalApproved          Float              @default(0)
-  historicalApplications Int                @default(0)
-  historicalPaid         Float              @default(0)
-  link                   String?
-  sponsorId              String
-  pocId                  String
-  isPublished            Boolean            @default(false)
-  isFeatured             Boolean            @default(false)
-  isActive               Boolean            @default(true)
-  isArchived             Boolean            @default(false)
-  createdAt              DateTime           @default(now())
-  updatedAt              DateTime           @updatedAt
-  skills                 Json?
-  logo                   String?
-  region                 String             @default("Global")
-  sponsor                Sponsors           @relation(fields: [sponsorId], references: [id])
-  poc                    User               @relation(fields: [pocId], references: [id])
-  questions              Json?
-  pocSocials             String?
-  status                 GrantStatus        @default(OPEN)
-  GrantApplication       GrantApplication[]
-  airtableId             String?
-  avgResponseTime        String?            @default("24h")
-  isNative               Boolean            @default(false)
-  isPrivate              Boolean            @default(false)
-  references             Json?
-  ai                     Json?
-  GrantTranche           GrantTranche[]
-  approverRecordId       String?
-  emailSender            String?
-  replyToEmail           String?
-  emailSalutation        String?
-  communityLink          String?
-  isPro                  Boolean            @default(false)
-  isST                   Boolean            @default(false)
-
-  @@index([id, slug])
-  @@index([pocId])
-  @@index([isPublished, isActive, isArchived, status])
-  @@index([region, isPublished, isActive])
-  @@index([slug])
-  @@index([sponsorId, isActive, isArchived, status])
-  @@index([createdAt(sort: Desc)])
-  @@index([totalApproved(sort: Desc)])
-  @@index([isPublished, isActive, isArchived, isPrivate, status])
-  @@index([region, isPublished, isActive, isArchived])
-  @@index([sponsorId, isPublished, isActive, isArchived])
-  @@index([isFeatured, createdAt])
-  @@index([status, isPublished, isActive])
-  @@index([region, status, isPublished])
-  @@index([minReward, maxReward])
-  @@index([totalPaid, totalApproved])
-  @@index([historicalApplications, totalApproved])
-}
-
-model GrantApplication {
-  id                  String                 @id @default(uuid())
-  userId              String
-  grantId             String
-  applicationStatus   GrantApplicationStatus @default(Pending)
-  projectTitle        String
-  projectOneLiner     String
-  projectDetails      String                 @db.Text
-  projectTimeline     String
-  proofOfWork         String                 @db.Text
-  walletAddress       String
-  twitter             String?
-  github              String?
-  milestones          String?                @db.Text
-  kpi                 String?                @db.Text
-  answers             Json?                  @default("[]")
-  createdAt           DateTime               @default(now())
-  updatedAt           DateTime               @updatedAt
-  user                User                   @relation(fields: [userId], references: [id])
-  grant               Grants                 @relation(fields: [grantId], references: [id])
-  label               SubmissionLabels       @default(Pending)
-  ask                 Float                  @default(0)
-  approvedAmount      Float                  @default(0)
-  approvedAmountInUSD Float                  @default(0)
-  decidedAt           DateTime?
-  totalPaid           Float                  @default(0)
-  isShipped           Boolean                @default(false)
-  paymentDetails      Json?
-  totalTranches       Int                    @default(0)
-  like                Json?
-  likeCount           Int                    @default(0)
-  Comments            Comment[]
-  decidedBy           String?
-  notes               String?                @db.VarChar(1000)
-  ai                  Json?
-  GrantTranche        GrantTranche[]
-  CreditLedger        CreditLedger[]
-  lumaLink            String?
-  expenseBreakdown    String?                @db.Text
-
-  @@index([likeCount])
-  @@index([grantId, userId, applicationStatus])
-  @@index([applicationStatus, decidedAt])
-  @@index([applicationStatus, createdAt])
-  @@index([userId, grantId, createdAt])
-  @@index([decidedAt(sort: Desc)])
-  @@index([createdAt(sort: Desc)])
-  @@index([approvedAmountInUSD(sort: Desc)])
-}
-
-model GrantTranche {
-  id               String             @id @default(uuid())
-  applicationId    String
-  grantId          String
-  ask              Float
-  walletAddress    String?
-  update           String?            @db.Text
-  helpWanted       String?            @db.Text
-  status           GrantTrancheStatus @default(Pending)
-  createdAt        DateTime           @default(now())
-  updatedAt        DateTime           @updatedAt
-  GrantApplication GrantApplication   @relation(fields: [applicationId], references: [id])
-  Grant            Grants             @relation(fields: [grantId], references: [id])
-  approvedAmount   Float?
-  decidedAt        DateTime?
-  trancheNumber    Int
-  eventPictures    Json?
-  eventReceipts    Json?
-  attendeeCount    Int?
-  socialPost       String?
-
-  @@index([applicationId])
-  @@index([grantId])
-}
-
-model Submission {
-  id                 String           @id @default(uuid())
-  link               String?          @db.VarChar(500)
-  tweet              String?          @db.VarChar(500)
-  status             SubmissionStatus @default(Pending)
-  eligibilityAnswers Json?            @default("[]")
-  userId             String
-  listingId          String
-  isWinner           Boolean          @default(false)
-  winnerPosition     Int?
-  isActive           Boolean          @default(true)
-  isArchived         Boolean          @default(false)
-  createdAt          DateTime         @default(now())
-  updatedAt          DateTime         @updatedAt
-  like               Json?
-  likeCount          Int              @default(0)
-  isPaid             Boolean          @default(false)
-  paymentDetails     Json?
-  otherInfo          String?          @db.Text
-  ask                Float?
-  label              SubmissionLabels @default(Unreviewed)
-  rewardInUSD        Float            @default(0)
-  listing            Bounties         @relation(fields: [listingId], references: [id])
-  user               User             @relation(fields: [userId], references: [id])
-  ogImage            String?          @db.Text
-  notes              String?          @db.VarChar(10000)
-  Comments           Comment[]
-  CreditLedger       CreditLedger[]
-  ai                 Json?
-  paymentSynced      Boolean          @default(false)
-
-  @@index([id, listingId])
-  @@index([isWinner])
-  @@index([createdAt, isWinner])
-  @@index([createdAt, listingId])
-  @@index([likeCount])
-  @@index([listingId, isActive, isArchived])
-  @@index([listingId, userId, isActive, isArchived])
-  @@index([listingId, isWinner, isActive, isArchived])
-  @@index([userId, listingId, createdAt])
-  @@index([userId, isWinner])
-  @@index([createdAt(sort: Desc)])
-  @@index([likeCount(sort: Desc), createdAt(sort: Desc)])
-}
-
-model Sponsors {
-  id               String              @id @default(uuid())
-  name             String              @unique
-  slug             String              @unique
-  logo             String?
-  url              String?
-  industry         String
-  twitter          String?
-  bio              String?
-  createdAt        DateTime            @default(now())
-  updatedAt        DateTime            @updatedAt
-  isArchived       Boolean             @default(false)
-  isActive         Boolean             @default(true)
-  entityName       String?
-  isVerified       Boolean             @default(false)
-  isCaution        Boolean             @default(false)
-  st               Boolean             @default(false)
-  verificationInfo Json?
-  Hackathon        Hackathon?
-  UserSponsors     UserSponsors[]
-  Bounties         Bounties[]
-  Templates        BountiesTemplates[]
-  Grants           Grants[]
-  User             User[]
-  UserInvites      UserInvites[]
-
-  @@index([id, slug])
-  @@index([isVerified, st])
-  @@index([isCaution, isVerified])
-  @@index([isActive, isArchived])
-}
-
-model User {
-  id                 String               @id @default(uuid())
-  publicKey          String?
-  walletAddress      String?
-  email              String               @unique
-  username           String?              @unique
-  photo              String?              @db.Text
-  firstName          String?              @db.VarChar(255)
-  lastName           String?              @db.VarChar(255)
-  createdAt          DateTime             @default(now())
-  updatedAt          DateTime             @updatedAt
-  isVerified         Boolean              @default(false)
-  role               String               @default("USER")
-  isTalentFilled     Boolean              @default(false)
-  interests          String?              @db.Text
-  bio                String?              @db.Text
-  twitter            String?              @db.Text
-  discord            String?              @db.Text
-  github             String?              @db.Text
-  linkedin           String?              @db.Text
-  website            String?              @db.Text
-  telegram           String?              @db.Text
-  community          String?              @db.Text
-  experience         String?
-  superteamLevel     String?
-  location           String?
-  cryptoExperience   String?
-  workPrefernce      String?
-  currentEmployer    String?
-  notifications      Json?
-  private            Boolean              @default(false)
-  skills             Json?
-  currentSponsorId   String?
-  emailVerified      DateTime?
-  hackathonId        String?
-  featureModalShown  Boolean              @default(false)
-  surveysShown       Json?
-  stRecommended      Boolean              @default(false)
-  acceptedTOS        Boolean              @default(false)
-  stLead             String?
-  currentSponsor     Sponsors?            @relation(fields: [currentSponsorId], references: [id])
-  UserSponsors       UserSponsors[]
-  poc                Bounties[]           @relation("poc")
-  templates          BountiesTemplates[]  @relation("poc")
-  Comment            Comment[]
-  Submission         Submission[]
-  Grants             Grants[]
-  UserInvites        UserInvites[]
-  SubscribeBounty    SubscribeBounty[]
-  PoW                PoW[]
-  Hackathon          Hackathon?           @relation(fields: [hackathonId], references: [id])
-  emailSettings      EmailSettings[]
-  TalentRankings     TalentRankings[]
-  Scouts             Scouts[]
-  GrantApplication   GrantApplication[]
-  SubscribeHackathon SubscribeHackathon[]
-  isBlocked          Boolean              @default(false)
-  privyDid           String               @unique
-  isKYCVerified      Boolean              @default(false)
-  kycName            String?
-  kycCountry         String?
-  kycAddress         String?
-  kycDOB             String?
-  kycIDNumber        String?
-  kycIDType          String?
-  kycVerifiedAt      DateTime?
-  CreditLedger       CreditLedger[]
-  blockRationale     String?
-  linkedTwitter      Json?
-  referralCode       String?              @unique
-  referredById       String?
-  referredBy         User?                @relation("UserReferrals", fields: [referredById], references: [id], onDelete: NoAction, onUpdate: NoAction)
-  referrals          User[]               @relation("UserReferrals")
-  telegramUsers      TelegramUser[]
-  emailLogs          emailLogs[]
-  isPro              Boolean              @default(false)
-
-  @@index([currentSponsorId])
-  @@index([hackathonId])
-  @@index([email])
-  @@index([username])
-  @@index([firstName])
-  @@index([lastName])
-  @@index([location])
-  @@index([referredById])
-}
-
-model Scouts {
-  id            String   @id @default(uuid())
-  userId        String
-  listingId     String
-  dollarsEarned Int
-  score         Decimal  @db.Decimal(9, 2)
-  invited       Boolean
-  skills        Json
-  createdAt     DateTime @default(now())
-  listing       Bounties @relation(fields: [listingId], references: [id])
-  user          User     @relation(fields: [userId], references: [id])
-
-  @@unique([userId, listingId])
-  @@index([listingId, invited])
-  @@index([listingId, score(sort: Desc)])
-  @@index([userId, listingId, invited])
-  @@index([score(sort: Desc)])
-}
-
-model TalentRankings {
-  id               String                 @id @default(uuid())
-  userId           String
-  skill            TalentRankingSkills    @default(ALL)
-  timeframe        TalentRankingTimeframe @default(ALL_TIME)
-  rank             Int
-  submissions      Int                    @default(0)
-  winRate          Int                    @default(0)
-  wins             Int                    @default(0)
-  totalEarnedInUSD Int
-  user             User                   @relation(fields: [userId], references: [id])
-
-  @@unique([userId, skill, timeframe])
-  @@index([skill, timeframe, rank(sort: Asc)])
-  @@index([totalEarnedInUSD(sort: Desc)])
-  @@index([rank(sort: Asc)])
-  @@index([winRate(sort: Desc)])
-}
-
-model PoW {
-  id          String    @id @default(uuid())
-  userId      String
-  title       String
-  description String    @db.Text
-  skills      Json?
-  link        String    @db.Text
-  createdAt   DateTime  @default(now())
-  subSkills   Json?
-  updatedAt   DateTime  @updatedAt
-  like        Json?
-  likeCount   Int       @default(0)
-  user        User      @relation(fields: [userId], references: [id])
-  ogImage     String?   @db.Text
-  Comments    Comment[]
-
-  @@index([createdAt])
-  @@index([likeCount])
-  @@index([likeCount(sort: Desc), createdAt(sort: Desc)])
-  @@index([userId, createdAt(sort: Desc)])
-  @@index([userId, id])
-}
-
-model EmailSettings {
-  id       Int    @id @default(autoincrement())
-  userId   String
-  category String
-  user     User   @relation(fields: [userId], references: [id])
-
-  @@index([userId, category])
-  @@index([category])
-}
-
-model UserSponsors {
-  userId    String
-  sponsorId String
-  role      Role     @default(MEMBER)
-  createdAt DateTime @default(now())
-  updatedAt DateTime @updatedAt
-  user      User     @relation(fields: [userId], references: [id])
-  sponsor   Sponsors @relation(fields: [sponsorId], references: [id])
-
-  @@id([userId, sponsorId])
-  @@index([sponsorId])
-}
-
-model UserInvites {
-  id         String   @id @default(uuid())
-  email      String
-  senderId   String
-  createdAt  DateTime @default(now())
-  updatedAt  DateTime @updatedAt
-  sponsorId  String
-  memberType Role     @default(MEMBER)
-  token      String   @unique
-  expires    DateTime
-  sender     User     @relation(fields: [senderId], references: [id])
-  sponsor    Sponsors @relation(fields: [sponsorId], references: [id])
-
-  @@index([senderId])
-  @@index([sponsorId])
-}
-
-model emailLogs {
-  id        String    @id @default(uuid())
-  email     String?
-  type      EmailType
-  bountyId  String?
-  userId    String?
-  user      User?     @relation(fields: [userId], references: [id])
-  createdAt DateTime  @default(now())
-  updatedAt DateTime  @updatedAt
-
-  @@index([bountyId, type])
-  @@index([userId, type])
-  @@index([type, createdAt(sort: Desc)])
-  @@index([email, type])
-}
-
-model ResendLogs {
-  id        String   @id @default(uuid())
-  email     String
-  subject   String
-  status    String
-  createdAt DateTime @default(now())
-  updatedAt DateTime @updatedAt
-
-  @@index([email, createdAt(sort: Desc)])
-  @@index([createdAt(sort: Desc)])
-  @@index([status])
-  @@index([email, status])
-}
-
-model SubscribeBounty {
-  id         String    @id @default(uuid())
-  userId     String
-  bountyId   String
-  isArchived Boolean   @default(false)
-  createdAt  DateTime  @default(now())
-  updatedAt  DateTime  @updatedAt
-  User       User      @relation(fields: [userId], references: [id])
-  Bounties   Bounties? @relation(fields: [bountyId], references: [id])
-
-  @@unique([userId, bountyId])
-  @@index([bountyId, isArchived])
-  @@index([userId, isArchived])
-}
-
-model SubscribeHackathon {
-  id          String     @id @default(uuid())
-  userId      String
-  hackathonId String
-  isArchived  Boolean    @default(false)
-  createdAt   DateTime   @default(now())
-  updatedAt   DateTime   @updatedAt
-  User        User       @relation(fields: [userId], references: [id])
-  Hackthons   Hackathon? @relation(fields: [hackathonId], references: [id])
-
-  @@index([hackathonId])
-  @@index([userId])
-}
-
-model Hackathon {
-  id                 String               @id @default(uuid())
-  slug               String               @unique
-  name               String
-  logo               String
-  sponsorId          String?              @unique
-  deadline           DateTime?
-  startDate          DateTime?
-  description        String
-  altLogo            String?
-  announceDate       DateTime?
-  eligibility        Json?
-  listings           Bounties[]
-  Sponsor            Sponsors?            @relation(fields: [sponsorId], references: [id])
-  User               User[]
-  SubscribeHackathon SubscribeHackathon[]
-}
-
-model UnsubscribedEmail {
-  id        String   @id @default(uuid())
-  email     String   @unique
-  createdAt DateTime @default(now())
-}
-
-model BlockedEmail {
-  id        String   @id @default(uuid())
-  email     String   @unique
-  reason    String?
-  createdAt DateTime @default(now())
-}
-
-model CreditLedger {
-  id             String            @id @default(uuid())
-  userId         String
-  submissionId   String?
-  applicationId  String?
-  type           CreditEventType
-  change         Int
-  effectiveMonth DateTime
-  createdAt      DateTime          @default(now())
-  user           User              @relation(fields: [userId], references: [id])
-  submission     Submission?       @relation(fields: [submissionId], references: [id])
-  application    GrantApplication? @relation(fields: [applicationId], references: [id])
-  decision       SubmissionStatus?
-
-  @@index([userId])
-  @@index([submissionId])
-  @@index([applicationId])
-  @@index([effectiveMonth])
-}
-
-model TelegramUser {
-  id           String   @id @default(uuid())
-  telegramId   BigInt   @unique
-  username     String?
-  chatId       BigInt
-  isSubscribed Boolean  @default(false)
-  isOnboarded  Boolean  @default(false)
-  preferences  Json?
-  createdAt    DateTime @default(now())
-  updatedAt    DateTime @updatedAt
-
-  user   User?   @relation(fields: [userId], references: [id])
-  userId String?
-
-  @@index([userId])
-  @@index([isSubscribed])
-}
-
-model ProPerks {
-  id          String @id @default(uuid())
-  header      String
-  description String
-  cta         String
-  ctaLink     String
-  logo        String
-}
-
-model Superteam {
-  id           String   @id @default(uuid())
-  name         String   @unique
-  tgChatId     String
-  tgThreadId   String?
-  registeredBy String
-  createdAt    DateTime @default(now())
-  updatedAt    DateTime @updatedAt
-}
-
-enum CreditEventType {
-  SUBMISSION
-  SPAM_PENALTY
-  WIN_BONUS
-  MONTHLY_CREDIT
-  CREDIT_REFUND
-  GRANT_WIN_BONUS
-  GRANT_SPAM_PENALTY
-  SPAM_DISPUTE
-  GRANT_SPAM_DISPUTE
-  REFERRAL_FIRST_SUBMISSION_BONUS_INVITEE
-  REFERRAL_FIRST_SUBMISSION_BONUS_INVITER
-  REFERRAL_INVITEE_WIN_BONUS_INVITER
-}
-
-enum TalentRankingSkills {
-  DEVELOPMENT
-  DESIGN
-  CONTENT
-  OTHER
-  ALL
-}
-
-enum EmailType {
-  BOUNTY_REVIEW
-  BOUNTY_DEADLINE
-  BOUNTY_DEADLINE_WEEK
-  BOUNTY_CLOSE_DEADLINE
-  BOUNTY_COMMITMENT_2DAYS
-  NO_VERIFICATION
-  NO_ACTIVITY
-  NO_REVIEW_SPONSOR_1
-  NO_REVIEW_SPONSOR_2
-  ROLLING_15_DAYS
-  ROLLING_30_DAYS
-  NEW_LISTING
-  ROLLING_UNPUBLISH
-  UNFILLED_PROFILE
-  WALLET_ANNOUNCEMENT
-  CREDITS_ANNOUNCEMENT
-  AUTO_GENERATE_ANNOUNCEMENT
-  NEW_LISTING_TELEGRAM
-  REFERRAL_ANNOUNCEMENT
-  PRO_FEATURE_ANNOUNCEMENT
-  GRANTEE_ACTIVATION
-  SPONSOR_ANNOUNCEMENT_150K
-  KALSHI_GRANTS
-}
+// ============================================
+// ENUMS
+// ============================================
 
 enum Role {
   ADMIN
-  MEMBER
+  BUSINESS
+  CONTRIBUTOR
 }
 
-enum Source {
-  NATIVE
-  IMPORT
-}
-
-enum ApplicationType {
-  rolling
-  fixed
-}
-
-enum status {
-  OPEN
-  REVIEW
-  CLOSED
-  VERIFYING
-  VERIFY_FAIL
-}
-
-enum GrantStatus {
-  OPEN
-  CLOSED
-}
-
-enum GrantApplicationStatus {
-  Pending
-  Approved
-  Completed
-  Rejected
-}
-
-enum BountyType {
-  bounty
-  project
-  hackathon
-}
-
-enum CommentRefType {
-  BOUNTY
-  SUBMISSION
-  GRANT_APPLICATION
-  POW
-}
-
-enum CommentType {
-  NORMAL
-  SUBMISSION
-  DEADLINE_EXTENSION
-  WINNER_ANNOUNCEMENT
-}
-
-enum JobType {
-  parttime
-  fulltime
-  internship
-}
-
-enum CompensationType {
-  fixed
-  range
-  variable
-}
-
-enum SubmissionLabels {
-  Unreviewed
-  Reviewed
-  Shortlisted
-  Spam
-  Low_Quality
-  Mid_Quality
-  High_Quality
-  Pending
-  Inaccessible
-  Needs_Review
-}
-
-enum TalentRankingTimeframe {
-  THIS_YEAR
-  LAST_30_DAYS
-  LAST_7_DAYS
-  ALL_TIME
+enum TaskStatus {
+  DRAFT       // Task created but not published
+  OPEN        // Task available for contributors
+  IN_PROGRESS // Task claimed by contributor(s)
+  SUBMITTED   // Submission pending review
+  APPROVED    // Task completed and approved
+  REJECTED    // Task submission rejected
+  CLOSED      // Task closed (deadline passed or manually closed)
 }
 
 enum SubmissionStatus {
-  Pending
-  Approved
-  Rejected
+  PENDING   // Awaiting review
+  APPROVED  // Submission accepted
+  REJECTED  // Submission rejected
 }
 
-enum GrantTrancheStatus {
-  Pending
-  Approved
-  Paid
-  Rejected
+enum PaymentStatus {
+  UNPAID  // Payment pending
+  PAID    // Payment completed
+}
+
+enum TopUpMethod {
+  VNPAY
+  MOMO
+  BANK_TRANSFER
+  /// Nạp mô phỏng — chỉ khi PAYMENT_SANDBOX (dev / demo có chủ đích)
+  SANDBOX
+  /// Stripe Checkout (test/live — https://dashboard.stripe.com/apikeys )
+  STRIPE
+}
+
+enum TopUpStatus {
+  PENDING              // Created, redirect not completed
+  AWAITING_CONFIRMATION // Bank transfer — chờ admin xác nhận
+  PROCESSING           // Gateway đang xử lý
+  COMPLETED
+  FAILED
+  CANCELLED
+}
+
+enum WithdrawalStatus {
+  PENDING
+  COMPLETED
+  FAILED
+  CANCELLED
+}
+
+enum ApplicationStatus {
+  PENDING   // Awaiting review
+  APPROVED  // Application accepted - contributor can work on task
+  REJECTED  // Application rejected
+}
+
+// ============================================
+// MODELS
+// ============================================
+
+/// User account - can be Admin, Business, or Contributor
+model User {
+  id               String    @id @default(uuid())
+  email            String    @unique
+  password         String
+  name             String
+  username         String?   @unique
+  avatar           String?
+  bio              String?   @db.Text
+  phone            String?
+  role             Role      @default(CONTRIBUTOR)
+  isActive         Boolean   @default(true)
+  isVerified       Boolean   @default(false)
+  resetToken       String?
+  resetTokenExpiry DateTime?
+  createdAt        DateTime  @default(now())
+  updatedAt        DateTime  @updatedAt
+
+  // Enhanced Profile Fields
+  skills          String[]           // Contributor skills
+  portfolioLinks  String[]           // Portfolio/project links
+  website         String?
+  location        String?
+  company         String?            // For business accounts
+  socialLinks     Json?              // { github, linkedin, twitter, etc }
+  hourlyRate      Float?             // Expected hourly rate (VND)
+  availability    String?            // "full-time", "part-time", "freelance"
+  /// Số dư ví (Business nạp qua cổng — dùng trả contributor)
+  walletBalance   Float              @default(0)
+
+  /// Contributor: thông tin nhận tiền (Admin CK thủ công / VietQR)
+  payoutBankBin     String?
+  payoutBankCode    String?
+  payoutBankName    String?
+  payoutAccountNo   String?
+  payoutAccountName String?
+
+  // Relations
+  createdTasks    Task[]            @relation("TaskCreator")
+  assignedTasks   Task[]            @relation("TaskAssignee")
+  submissions     Submission[]
+  payments        Payment[]
+  applications    TaskApplication[]
+  notifications   Notification[]
+  reviewsGiven    Review[]          @relation("ReviewsGiven")
+  reviewsReceived Review[]          @relation("ReviewsReceived")
+  savedTasks      SavedTask[]
+  taskTemplates   TaskTemplate[]
+  taskComments    TaskComment[]
+  walletTopUps       WalletTopUp[]
+  walletWithdrawals  WalletWithdrawal[]
+
+  @@index([email])
+  @@index([role])
+  @@index([username])
+  @@index([resetToken])
+  @@map("users")
+}
+
+/// Task - work item created by business, completed by contributors
+model Task {
+  id           String     @id @default(uuid())
+  title        String
+  slug         String     @unique
+  description  String     @db.Text
+  requirements String?    @db.Text
+  reward       Float      // VND amount
+  deadline     DateTime?
+  status       TaskStatus @default(DRAFT)
+  maxAssignees Int        @default(1)
+  isPublished  Boolean    @default(false)
+  isFeatured   Boolean    @default(false)
+  category     String?
+  skills       String[]   // Required skills
+  /// Ảnh minh họa / cover (URL tuyệt đối hoặc đường dẫn như /uploads/...)
+  coverImageUrl String?   @db.Text
+  createdAt    DateTime   @default(now())
+  updatedAt    DateTime   @updatedAt
+
+  // Relations
+  creator      User              @relation("TaskCreator", fields: [creatorId], references: [id], onDelete: Cascade)
+  creatorId    String
+  assignees    User[]            @relation("TaskAssignee")
+  submissions  Submission[]
+  applications TaskApplication[]
+  reviews      Review[]
+  savedBy      SavedTask[]
+  comments     TaskComment[]
+
+  @@index([status])
+  @@index([creatorId])
+  @@index([slug])
+  @@index([isPublished, status])
+  @@index([deadline])
+  @@map("tasks")
+}
+
+/// Public discussion thread on a task (Q&A / comments — not the same as Review.comment)
+model TaskComment {
+  id        String   @id @default(uuid())
+  body      String   @db.Text
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  task   Task @relation(fields: [taskId], references: [id], onDelete: Cascade)
+  taskId String
+  user   User @relation(fields: [userId], references: [id], onDelete: Cascade)
+  userId String
+
+  /// Trả lời trực tiếp một bình luận gốc (một cấp — không lồng sâu)
+  parent   TaskComment?  @relation("TaskCommentReplies", fields: [parentId], references: [id], onDelete: Cascade)
+  parentId String?
+  replies  TaskComment[] @relation("TaskCommentReplies")
+
+  @@index([taskId, createdAt])
+  @@index([parentId])
+  @@map("task_comments")
+}
+
+/// Submission - work submitted by contributor for a task
+model Submission {
+  id          String           @id @default(uuid())
+  content     String           @db.Text
+  links       String[]         // Array of submitted links
+  fileUrls    String[]         // Array of file URLs
+  status      SubmissionStatus @default(PENDING)
+  feedback    String?          @db.Text
+  submittedAt DateTime         @default(now())
+  reviewedAt  DateTime?
+
+  // Relations
+  task          Task     @relation(fields: [taskId], references: [id], onDelete: Cascade)
+  taskId        String
+  contributor   User     @relation(fields: [contributorId], references: [id], onDelete: Cascade)
+  contributorId String
+  payment       Payment?
+
+  @@index([taskId])
+  @@index([contributorId])
+  @@index([status])
+  @@map("submissions")
+}
+
+/// Payment - tracks earnings for approved submissions
+model Payment {
+  id        String        @id @default(uuid())
+  amount    Float         // VND amount
+  status    PaymentStatus @default(UNPAID)
+  note      String?
+  /// MANUAL | WALLET | VNPAY | MOMO (ghi nhận kênh thanh toán cho contributor)
+  payChannel String?       @default("MANUAL")
+  createdAt DateTime      @default(now())
+  paidAt    DateTime?
+
+  // Relations
+  contributor   User       @relation(fields: [contributorId], references: [id], onDelete: Cascade)
+  contributorId String
+  submission    Submission @relation(fields: [submissionId], references: [id], onDelete: Cascade)
+  submissionId  String     @unique
+
+  @@index([contributorId])
+  @@index([status])
+  @@map("payments")
+}
+
+/// TaskApplication - application from contributor to work on a task
+model TaskApplication {
+  id             String            @id @default(uuid())
+  coverLetter    String            @db.Text // Why they want to work on this task
+  portfolioLinks String[]          // Links to previous work
+  experience     String?           @db.Text // Relevant experience
+  expectedDays   Int?              // How many days they need
+  status         ApplicationStatus @default(PENDING)
+  feedback       String?           @db.Text // Feedback from business
+  appliedAt      DateTime          @default(now())
+  reviewedAt     DateTime?
+
+  // Relations
+  task        Task   @relation(fields: [taskId], references: [id], onDelete: Cascade)
+  taskId      String
+  applicant   User   @relation(fields: [applicantId], references: [id], onDelete: Cascade)
+  applicantId String
+
+  @@unique([taskId, applicantId]) // One application per task per user
+  @@index([taskId])
+  @@index([applicantId])
+  @@index([status])
+  @@map("task_applications")
+}
+
+// ============================================
+// NOTIFICATIONS
+// ============================================
+
+enum NotificationType {
+  APPLICATION_APPROVED   // Your application was approved
+  APPLICATION_REJECTED   // Your application was rejected
+  SUBMISSION_APPROVED    // Your submission was approved
+  SUBMISSION_REJECTED    // Your submission was rejected
+  PAYMENT_RECEIVED       // You received payment
+  NEW_APPLICATION        // New application for your task (for businesses)
+  NEW_SUBMISSION         // New submission for your task (for businesses)
+  TASK_ASSIGNED          // You were assigned to a task
+  NEW_TASK_COMMENT       // New comment or reply on a task you own or participated in
+}
+
+/// Notification - in-app notifications for users
+model Notification {
+  id        String           @id @default(uuid())
+  type      NotificationType
+  title     String
+  message   String
+  link      String?          // Optional link to navigate to
+  isRead    Boolean          @default(false)
+  createdAt DateTime         @default(now())
+
+  // Relations
+  user   User   @relation(fields: [userId], references: [id], onDelete: Cascade)
+  userId String
+
+  @@index([userId, isRead])
+  @@index([userId, createdAt])
+  @@map("notifications")
+}
+
+// ============================================
+// REVIEWS & RATINGS
+// ============================================
+
+/// Review - ratings and reviews between users after task completion
+model Review {
+  id        String   @id @default(uuid())
+  rating    Int      // 1-5 stars
+  comment   String?  @db.Text
+  createdAt DateTime @default(now())
+
+  // Relations - from reviewer to reviewee
+  task       Task   @relation(fields: [taskId], references: [id], onDelete: Cascade)
+  taskId     String
+  reviewer   User   @relation("ReviewsGiven", fields: [reviewerId], references: [id], onDelete: Cascade)
+  reviewerId String
+  reviewee   User   @relation("ReviewsReceived", fields: [revieweeId], references: [id], onDelete: Cascade)
+  revieweeId String
+
+  @@unique([taskId, reviewerId, revieweeId]) // One review per task per pair
+  @@index([revieweeId])
+  @@index([reviewerId])
+  @@index([taskId])
+  @@map("reviews")
+}
+
+// ============================================
+// SAVED TASKS / WATCHLIST
+// ============================================
+
+/// SavedTask - bookmarked tasks for users
+model SavedTask {
+  id        String   @id @default(uuid())
+  createdAt DateTime @default(now())
+
+  // Relations
+  user   User   @relation(fields: [userId], references: [id], onDelete: Cascade)
+  userId String
+  task   Task   @relation(fields: [taskId], references: [id], onDelete: Cascade)
+  taskId String
+
+  @@unique([userId, taskId])
+  @@index([userId])
+  @@map("saved_tasks")
+}
+
+// ============================================
+// TASK TEMPLATES
+// ============================================
+
+/// TaskTemplate - reusable task templates for businesses
+model TaskTemplate {
+  id           String   @id @default(uuid())
+  name         String
+  description  String   @db.Text
+  requirements String?  @db.Text
+  reward       Float?
+  maxAssignees Int      @default(1)
+  category     String?
+  skills       String[]
+  isSystem     Boolean  @default(false) // System-provided templates
+  createdAt    DateTime @default(now())
+  updatedAt    DateTime @updatedAt
+
+  // Relations
+  creator   User?   @relation(fields: [creatorId], references: [id], onDelete: Cascade)
+  creatorId String?
+
+  @@index([creatorId])
+  @@index([isSystem])
+  @@map("task_templates")
+}
+
+// ============================================
+// WALLET & PAYMENT GATEWAY (TOP-UP)
+// ============================================
+
+/// WalletTopUp — nạp tiền vào ví Business (VNPay / MoMo / CK ngân hàng)
+model WalletTopUp {
+  id                   String      @id @default(uuid())
+  amount               Float       // VND
+  method               TopUpMethod
+  status               TopUpStatus @default(PENDING)
+  /// Mã giao dịch gửi lên cổng (vnp_TxnRef / orderId)
+  gatewayOrderRef      String?     @unique
+  gatewayTransactionId String?
+  gatewayRaw           Json?
+  bankTransferNote     String?     @db.Text
+  failureReason        String?     @db.Text
+  createdAt            DateTime    @default(now())
+  completedAt          DateTime?
+
+  user   User   @relation(fields: [userId], references: [id], onDelete: Cascade)
+  userId String
+
+  @@index([userId, createdAt])
+  @@index([status])
+  @@map("wallet_top_ups")
+}
+
+/// Rút tiền khỏi ví Business (sandbox: mô phỏng; production: có thể mở rộng CK thật)
+model WalletWithdrawal {
+  id          String            @id @default(uuid())
+  amount      Float
+  status      WithdrawalStatus  @default(PENDING)
+  note        String?           @db.Text
+  createdAt   DateTime          @default(now())
+  completedAt DateTime?
+
+  user   User   @relation(fields: [userId], references: [id], onDelete: Cascade)
+  userId String
+
+  @@index([userId, createdAt])
+  @@index([status])
+  @@map("wallet_withdrawals")
 }

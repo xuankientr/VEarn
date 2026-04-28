@@ -1,0 +1,67 @@
+# PostgreSQL chính thức của VEarn — CHỈ cần MỘT container Postgres cho local.
+# Nếu trong Docker Desktop thấy thêm container kiểu "vearn-postgres" (tạo tay / image khác):
+#   docker stop vearn-postgres && docker rm vearn-postgres
+#
+# Chỉ DB (app chạy pnpm dev trên máy):
+#   docker compose up -d db
+#
+# Cả app Next trong Docker:
+#   docker compose up --build -d
+#
+# Nạp ví (Business): chỉ chuyển khoản + VietQR — đặt trong `.env` cùng thư mục.
+# BANK_TRANSFER_BANK_NAME, BANK_TRANSFER_ACCOUNT_NO, BANK_TRANSFER_ACCOUNT_NAME,
+# tuỳ chọn BANK_TRANSFER_VIETQR_BIN. Sandbox rút ví: PAYMENT_SANDBOX=true
+
+name: vearn
+
+services:
+  db:
+    container_name: vearn-db
+    image: postgres:16-alpine
+    restart: unless-stopped
+    environment:
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: password
+      POSTGRES_DB: vearn
+    ports:
+      - '5432:5432'
+    volumes:
+      - vearn_pgdata:/var/lib/postgresql/data
+    healthcheck:
+      test: ['CMD-SHELL', 'pg_isready -U postgres']
+      interval: 5s
+      timeout: 5s
+      retries: 8
+
+  app:
+    container_name: vearn-app
+    build: .
+    restart: unless-stopped
+    ports:
+      - '3000:3000'
+    environment:
+      DATABASE_URL: postgresql://postgres:password@db:5432/vearn?schema=public
+      NEXTAUTH_URL: http://localhost:3000
+      NEXT_PUBLIC_APP_URL: http://localhost:3000
+      # ≥32 ký tự để pass validate production trong container
+      NEXTAUTH_SECRET: '01234567890123456789012345678901'
+      JWT_SECRET: '01234567890123456789012345678901'
+      NODE_ENV: production
+      BANK_TRANSFER_BANK_NAME: ${BANK_TRANSFER_BANK_NAME:-}
+      BANK_TRANSFER_ACCOUNT_NO: ${BANK_TRANSFER_ACCOUNT_NO:-}
+      BANK_TRANSFER_ACCOUNT_NAME: ${BANK_TRANSFER_ACCOUNT_NAME:-}
+      BANK_TRANSFER_VIETQR_BIN: ${BANK_TRANSFER_VIETQR_BIN:-}
+      PAYMENT_SANDBOX: ${PAYMENT_SANDBOX:-}
+      PAYMENT_SANDBOX_ALLOW_PROD: ${PAYMENT_SANDBOX_ALLOW_PROD:-}
+    depends_on:
+      db:
+        condition: service_healthy
+    # DB từng chỉ dùng `db push` (không có lịch sử migration) → `migrate deploy` có thể lỗi và container tắt.
+    # Local/demo: `db push`. Production DB mới + đã `migrate deploy`: đổi command thành migrate + start (xem docs/DEPLOY.md).
+    command:
+      - /bin/sh
+      - -c
+      - pnpm exec prisma db push --skip-generate && pnpm start
+
+volumes:
+  vearn_pgdata:
