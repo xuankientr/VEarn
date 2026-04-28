@@ -1,0 +1,11 @@
+# Cho phép chạy lifecycle scripts của các dependency cần binary (Prisma, esbuild).
+# https://pnpm.io/settings#onlybuiltdependencies
+packages:
+  - '.'
+
+onlyBuiltDependencies:
+  - '@prisma/client'
+  - '@prisma/engines'
+  - prisma
+  - esbuild
+  - unrs-resolver
